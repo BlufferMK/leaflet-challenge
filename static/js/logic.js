@@ -1,19 +1,18 @@
-const url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson";
+const url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_month.geojson";
 let quakeMarkers = [];
 let depths = [];
 
 // request to the data/
 d3.json(url).then(function (data) {
     // Once we get a response, send the data.features object to the createFeatures function.
-    console.log(data.features);
     createMarkers(data.features);
 });
 
 function markerSize(mag) {
-    return mag * mag * mag * 800;
-    console.log('markerSize ran');
+    return mag * mag * mag * 1000;
+
 }
-let colors = ["#f40605", "#f49505", "#f4b405", "#f4df05", "#b6f405", "#4cf405"]
+let colors = ["#790000", "#900095", "#ae00b0", "#cd00b0", "#ff49d3", "#ffa0ff"];
 function markerColor(depth) {
     if (depth < 5) {
         return colors[0]
@@ -75,32 +74,35 @@ function createMap(quakeLayer) {
     // Create our map, giving it the streetmap and earthquakes layers to display on load.
     let myMap = L.map("map", {
         center: [
-            41.5, -90.1
+            20, -0.1
         ],
-        zoom: 5,
+        zoom: 3,
         layers: [street, quakeLayer]
     });
-    console.log("map added");
-    createLegend();
+    
+    createLegend(myMap);
 }
 
-function createLegend() {
+function createLegend(myMap) {
   
+
+    
+    
     // Set up the legend with a function
-    var legend = L.control({ position: "BottomRight" });
+    var legend = L.control({ position: "bottomleft" });
     legend.onAdd = function () {
         var div = L.DomUtil.create('div', 'info legend');
-        let labels = ['< 5', '< 15', '< 30', '< 60', '< 120', '> 120'];
-        let colors = ["#f40605", "#f49505", "#f4b405", "#f4df05", "#b6f405", "#4cf405"]
-        div.innerHTML = '<h4>Depths</h4>';
-        console.log(div.innerHTML);
+        let labels = ['0', '5', '15', '30', '60', '120'];
+        let colors = ["#790000", "#900095", "#ae00b0", "#cd00b0", "#ff49d3", "#ffa0ff"];
+        div.innerHTML = '<h3>Depth of Quake (km)</h3>';
 
         for (let index = 0; index < labels.length; index++) {
             div.innerHTML +=
-                '<i style= "background:' + colors[index] + '"></i> ' + labels[index] + '<br>';
+                "<i style= 'background:" + colors[index] + "'></i>" + 
+                labels[index] + (labels[index +1] ? '&ndash;' + labels[index +1] + '<br>' : '+');
         }
         return div;
     };
 
-    legend.addTo(map);
+    legend.addTo(myMap);
 }
