@@ -89,7 +89,7 @@ function createLegend(myMap) {
     
     
     // Set up the legend with a function
-    var legend = L.control({ position: "bottomleft" });
+    var legend = L.control({ position: "bottomright" });
     legend.onAdd = function () {
         var div = L.DomUtil.create('div', 'info legend');
         let labels = ['0', '5', '15', '30', '60', '120'];
